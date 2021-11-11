@@ -1,0 +1,55 @@
+<?php
+
+namespace [namespace];
+
+use App\Models\{Model};
+
+use Gsferro\ResponseView\Traits\ResponseView;
+use Illuminate\Support\Facades\Validator;
+use Livewire\Component;
+
+class [class] extends Component
+{
+    use ResponseView;
+
+    public  array  $state      = [];
+    private string $routeIndex = "";
+
+    /** @var [Model] */
+    public $model;
+
+    public function mount($uuid)
+    {
+        $this->model = [Model]::findByUuid($uuid);
+        $this->state = $this->model->toArray();
+    }
+
+    public function render()
+    {
+        $this->addTitulo(__("[Model]"));
+        // $this->addSubTitulo(__(""));
+        $this->addBreadcrumb(__("Cadastro"), null, "fa-book");
+        $this->addBreadcrumb(__("[Model]")); // , route($this->routeIndex), "fa-"
+        $this->addBreadcrumb(__("Editar", null, "fa-edit"));
+        // $this->addBreadcrumb("{$this->model->descricao}");
+
+        $this->addData("routeIndex", $this->routeIndex);
+
+        return $this->view('[view]');
+    }
+
+    public function update()
+    {
+        Validator::make($this->state, [Model]::$rules[ "update" ])->validate();
+
+        $this->model->update($this->state);
+
+        // Todo usar feedback e notification
+        session()->flash('feedback', [
+            "type"     => "success",
+            "message"  => "[class] editado com sucesso",
+        ]);
+
+        return redirect()->route($this->routeIndex);
+    }
+}

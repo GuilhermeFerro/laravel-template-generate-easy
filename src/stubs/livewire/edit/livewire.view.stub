@@ -1,0 +1,26 @@
+<div>
+    <x-loading-global />
+    @push('titulo', $titulo ?? "")
+    @push('subTitulo', $subTitulo ?? "")
+    @isset($breadcrumb)
+        @push('breadcrumb')
+            <x-breadcrumb :breadcrumb="$breadcrumb" />
+        @endpush
+    @endisset
+
+    <form wire:submit.prevent="update">
+        <div class="row">
+            <div class="col-12 col-sm-8 col-md-6">
+                @include('[pathLivewire].form')
+            </div>
+        </div>
+
+        <x-divider-form />
+
+        <div class="mx-half ">
+            <x-links.buttons.cancelar :route="route('$routeIndex')" />
+            <x-buttons.edit wire:target="update"/>
+        </div>
+    </form>
+
+</div>

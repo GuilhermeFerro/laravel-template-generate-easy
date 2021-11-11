@@ -1,0 +1,45 @@
+<?php
+
+namespace [namespace];
+
+use App\Models\{Model};
+
+use Gsferro\ResponseView\Traits\ResponseView;
+use Illuminate\Support\Facades\Validator;
+use Livewire\Component;
+
+class [class] extends Component
+{
+    use ResponseView;
+
+    public  array  $state      = [];
+    private string $routeIndex = "";
+
+    public function render()
+    {
+        $this->addTitulo(__("[Model]"));
+        // $this->addSubTitulo(__(""));
+        $this->addBreadcrumb(__("Cadastro"), null, "fa-book");
+        $this->addBreadcrumb(__("[Model]")); // , route($this->routeIndex), "fa-"
+        $this->addBreadcrumb(__("Novo Registro"));
+
+        $this->addData("routeIndex", $this->routeIndex);
+
+        return $this->view('[view]');
+    }
+
+    public function create()
+    {
+        Validator::make($this->state, [Model]::$rules[ "create" ])->validate();
+
+        $modal = [Model]::create($this->state);
+
+        // Todo usar feedback e notification
+        session()->flash('feedback', [
+            "type"     => "success",
+            "message"  => __("Registro inserido com sucesso"),
+        ]);
+
+        return redirect()->route($this->routeIndex);
+    }
+}

@@ -1,0 +1,15 @@
+<div>
+    <x-modals.modal>
+        <x-modals.header :titulo="__('')"/>
+        <x-modals.body>
+            @isset($error)
+                <x-messages.erro :titulo="__('Atenção')" >
+                    {{ $error }}
+                </x-messages.erro>
+            @endisset
+            <form wire:submit.prevent="">
+
+            </form>
+        </x-modals.body>
+    </x-modals.modal>
+</div>

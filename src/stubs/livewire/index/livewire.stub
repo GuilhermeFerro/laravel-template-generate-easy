@@ -1,0 +1,22 @@
+<?php
+
+namespace [namespace];
+
+use Gsferro\ResponseView\Traits\ResponseView;
+use Illuminate\Support\Facades\Validator;
+use Livewire\Component;
+
+class [class] extends Component
+{
+    use ResponseView;
+
+    public function render()
+    {
+         $this->addTitulo(__("[Model]"));
+        // $this->addSubTitulo(__(""));
+        $this->addBreadcrumb(__("Cadastro"), null, "fa-book");
+        $this->addBreadcrumb(__("[Model]")); # todo route('cadastros.usuario.index'), "fa-users"
+
+        return $this->view('[view]');
+    }
+}

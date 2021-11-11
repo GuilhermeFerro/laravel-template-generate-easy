@@ -1,0 +1,27 @@
+<?php
+
+namespace [namespace];
+
+use App\Traits\Dashboard\CardFilterTrait;
+use App\Interfaces\Dashboard\CardFilterInterface;
+use Gsferro\ResponseView\Traits\ResponseView;
+use Livewire\Component;
+
+class [class] extends Component implements CardFilterInterface
+{
+    use ResponseView, CardFilterTrait;
+
+    public function getFiltro()
+    {
+        $this->total = \App\Models\[class]::query()
+            ->when(!empty($this->state), function ($q) {
+                return $q->filterEasy(array_filter($this->state, 'strlen'));
+            })
+            ->count();
+    }
+
+    public function render()
+    {
+        return $this->view('[view]');
+    }
+}

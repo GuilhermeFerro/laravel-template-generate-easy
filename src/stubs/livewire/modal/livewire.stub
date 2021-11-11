@@ -1,0 +1,17 @@
+<?php
+
+namespace [namespace];
+
+use Gsferro\ResponseView\Traits\ResponseView;
+use Illuminate\Support\Facades\Validator;
+use LivewireUI\Modal\ModalComponent;
+
+class [class] extends ModalComponent
+{
+    use ResponseView;
+
+    public function render()
+    {
+        return $this->view('[view]');
+    }
+}

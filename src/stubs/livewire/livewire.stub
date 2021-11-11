@@ -1,0 +1,16 @@
+<?php
+
+namespace [namespace];
+
+use Livewire\Component;
+use Gsferro\ResponseView\Traits\ResponseView;
+
+class [class] extends Component
+{
+    use ResponseView;
+
+    public function render()
+    {
+        return $this->view('[view]');
+    }
+}

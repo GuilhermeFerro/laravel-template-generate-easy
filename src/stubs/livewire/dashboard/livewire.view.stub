@@ -1,0 +1,22 @@
+<x-cards.dashboard.padrao
+    :titulo="$titulo"
+    :subTitulo="$subTitulo"
+    :total="$total"
+    :src="$src"
+    :alt="$titulo"
+    :route="$route"
+    :label="$label"
+>
+    {{-- TODO vir de metodo e componente --}}
+    {{--
+    <div class="row align-items-center mb-1">
+        <div class="col-auto">
+            @lang("")
+        </div>
+        <div class="col-12">
+            <x-form.select-simple @change.away="isOpen = false" wire:model="state." :options=""/>
+        </div>
+    </div>
+    --}}
+
+</x-cards.dashboard.padrao>

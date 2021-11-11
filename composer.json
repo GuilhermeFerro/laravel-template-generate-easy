@@ -1,0 +1,41 @@
+{
+    "name": "gsferro/template-generate-easy",
+    "license": "MIT",
+    "tags" : ["Laravel", "Livewire", "Solution", "Easy", "Generate", "Template"],
+    "description": "",
+    "authors": [
+        {
+            "name": "Guilherme Ferro",
+            "email": "gsferroti@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "^8.0",
+        "gsferro/filtereasy": "^1.1",
+        "gsferro/microservico": "^2.2",
+        "gsferro/responseview": "^1.1",
+        "livewire-ui/modal": "^1.0",
+        "livewire/livewire": "^2.5",
+        "owen-it/laravel-auditing": "^12.0",
+        "rappasoft/laravel-livewire-tables": "1.12",
+        "spatie/laravel-permission": "^4.3",
+        "your-app-rocks/eloquent-uuid": "^2.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "Gsferro\\TemplateGenerateEasy\\": "src/"
+        },
+        "files": [
+        ]
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Gsferro\\TemplateGenerateEasy\\Providers\\TemplateGenerateEasyServiceProvider"
+            ],
+            "aliases": {
+                "TemplateGenerateEasy": "Gsferro\\TemplateGenerateEasy\\Facades\\TemplateGenerateEasyFacade"
+            }
+        }
+    }
+}
