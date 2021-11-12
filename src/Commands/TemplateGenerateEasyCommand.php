@@ -9,6 +9,7 @@ use function Livewire\str;
 class TemplateGenerateEasyCommand extends Command
 {
     private string $entite;
+    private string $pathStubs    = "vendor/gsferro/template-generate-easy/src/stubs/livewire";
     private bool   $createDash   = false;
     private bool   $createModal  = false;
     private bool   $createImport = false;
@@ -18,7 +19,7 @@ class TemplateGenerateEasyCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'gsferro:template-generate {entite : Entite name} '; # {--fields=}
+    protected $signature = 'gsferro:template-generate {entite : Entite name} {--dashboard} {--import} {--modal}'; # {--fields=}
 
     /**
      * The console command description.
@@ -44,11 +45,21 @@ class TemplateGenerateEasyCommand extends Command
      */
     public function handle()
     {
-//        $arguments = $this->arguments();
         $this->entite = ucfirst($this->argument('entite'));
 
         $this->line("");
         $this->comment("Preparando a criação da entidade [ {$this->entite} ]");
+
+        /*
+        |---------------------------------------------------
+        | Questions
+        |---------------------------------------------------
+        */
+        $this->verifyParams();
+
+        /*dd( $this->createImport,
+            $this->createDash,
+            $this->createModal);*/
 
         /*
         |---------------------------------------------------
@@ -57,6 +68,7 @@ class TemplateGenerateEasyCommand extends Command
         |
         | CRUD:
         |   - model
+        |       - todo: criar tmb os relacionamentos e models filho
         |   - datatable (grid)
         |   - index
         |   - create
@@ -81,19 +93,19 @@ class TemplateGenerateEasyCommand extends Command
             $this->call("livewire:make", [
                 "name"   => "{$this->entite}/Index",
                 "--test" => "--test",
-                "--stub" => "vendor/gsferro/template-generate-easy/src/stubs/livewire/index"
+                "--stub" => "{$this->pathStubs}/index"
             ]); # com o stub modificado
 
             $this->call("livewire:make", [
                 "name"   => "{$this->entite}/Create",
                 "--test" => "--test",
-                "--stub" => "vendor/gsferro/template-generate-easy/src/stubs/livewire/create"
+                "--stub" => "{$this->pathStubs}/create"
             ]); # com o stub modificado # todo unificar
 
             $this->call("livewire:make", [
                 "name"   => "{$this->entite}/Edit",
                 "--test" => "--test",
-                "--stub" => "vendor/gsferro/template-generate-easy/src/stubs/livewire/edit"
+                "--stub" => "{$this->pathStubs}/edit"
             ]); # todo unificar
 
             $this->call("pest:test", [
@@ -115,20 +127,18 @@ class TemplateGenerateEasyCommand extends Command
 
             /*
             |---------------------------------------------------
-            | criar import
-            |---------------------------------------------------
-            */
-            if ($this->createImport) {
-                // todo
-            }
-
-            /*
-            |---------------------------------------------------
             | criar dashboard
             |---------------------------------------------------
             */
-            if ($this->createDash) {
-                //            $this->call("livewire:make",    ["name" => "Dashboard/{$this->entite}/Edit",   "--test" => "--test", "--stub" => "vendor/gsferro/template-generate-easy/src/stubs/livewire/dashboard"]);
+            if ($this->createDash == true) {
+                $this->line("");
+                $this->comment("Preparando a criação do Dashboard");
+
+                $this->call("livewire:make", [
+                    "name"   => "Dashboard/{$this->entite}",
+                    "--test" => "--test",
+                    "--stub" => "{$this->pathStubs}/dashboard"
+                ]);
             }
 
             /*
@@ -136,22 +146,52 @@ class TemplateGenerateEasyCommand extends Command
             | criar modal
             |---------------------------------------------------
             */
-            if ($this->createModal) {
-                //            $this->call("livewire:make",    ["name" => "{$this->entite}/Modal", "--test" => "--test", "--stub" => "vendor/gsferro/template-generate-easy/src/stubs/livewire/modal"]);
+            if ($this->createModal == true) {
+                $this->line("");
+                $this->comment("Preparando a criação da Modal");
+
+                $this->call("livewire:make", [
+                    "name"   => "{$this->entite}/Modal",
+                    "--test" => "--test",
+                    "--stub" => "{$this->pathStubs}/modal"
+                ]);
+            }
+
+            /*
+            |---------------------------------------------------
+            | criar import
+            |---------------------------------------------------
+            */
+            if ($this->createImport == true) {
+                $this->line("");
+                $this->comment("Preparando a criação do Import");
+
+                $this->call("make:import", [
+                    "name"    => "{$this->entite}/{$this->entite}Import",
+                    "--model" => "{$this->entite}",
+                ]);
+
+                $this->call("livewire:make", [
+                    "name"   => "{$this->entite}/Importacao/Modal",
+                    "--test" => "--test",
+                    "--stub" => "{$this->pathStubs}/import"
+                ]);
+
+                $this->applyModelInImport();
             }
 
         } catch (\Exception $e) {
-            dump('Ops:', $e->getMessage());
+            dump('Ops...', $e->getMessage());
         }
     }
 
     private function applyModelInView()
     {
-        $pathViews = resource_path('views/livewire');
+        $pathViews = resource_path('views');
 
         $acoes = ["index", "create", "edit"];
         foreach ($acoes as $file) {
-            $file = "{$pathViews}\\".str($this->entite)->kebab()."\\$file.blade.php";
+            $file = "{$pathViews}\livewire\\".str($this->entite)->kebab()."\\$file.blade.php";
 
             $this->applyInClass($file);
         }
@@ -159,11 +199,11 @@ class TemplateGenerateEasyCommand extends Command
 
     private function applyModelInClass()
     {
-        $pathLivewire = app_path('Http/Livewire');
+        $pathLivewire = app_path("Http/Livewire/{$this->entite}");
 
         $acoes = ["Index", "Create", "Edit"];
         foreach ($acoes as $file) {
-            $file = "{$pathLivewire}\\$this->entite\\$file.php";
+            $file = "{$pathLivewire}\\$file.php";
 
             $this->applyInClass($file);
         }
@@ -176,13 +216,32 @@ class TemplateGenerateEasyCommand extends Command
 
     private function applyReplace($file)
     {
-        $search  = ['/\[Model\]/', /*'/\[model\]/', */'/\{Model\}/', '/\[pathLivewire\]/'];
-        $replace = [$this->entite, /*strtolower($this->entite),*/ $this->entite, str($this->entite)->kebab()];
+        $params = [
+            '/\[Model\]/'        => "{$this->entite}",
+            '/\{Model\}/'        => "{$this->entite}",
+            '/\[pathLivewire\]/' => str($this->entite)->kebab(),
+            '/\{Import\}/'       => "{$this->entite}Import",
+            '/\[Import\]/'       => "{$this->entite}Import",
+        ];
 
         return preg_replace(
-            $search,
-            $replace,
+            array_keys($params),
+            array_values($params),
             file_get_contents("{$file}")
         );
+    }
+
+    private function verifyParams()
+    {
+        $this->createDash   = (bool) ($this->option('dashboard') ?: $this->confirm('Create Dashboard?', true));
+        $this->createImport = (bool) ($this->option('import')    ?: $this->confirm('Create Import Excel?', true));
+        $this->createModal  = (bool) ($this->option('modal')     ?: $this->confirm('Create Modal?', false));
+    }
+
+    private function applyModelInImport()
+    {
+        $pathLivewire = app_path("Http/Livewire/{$this->entite}/Importacao/Modal.php");
+
+        $this->applyInClass("{$pathLivewire}");
     }
 }

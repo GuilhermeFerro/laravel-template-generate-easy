@@ -1,0 +1,67 @@
+<div>
+    <x-modals.modal>
+        <x-modals.header :titulo="__('Importação')"/>
+        <x-modals.body>
+            @isset($error)
+                <x-messages.erro :titulo="__('Atenção')" >
+                    {{ $error }}
+                </x-messages.erro>
+            @endisset
+            <form wire:submit.prevent="importar" {{--enctype="multipart/form-data"--}}>
+                <x-fieldset :legend="__('Arquivo')">
+                    <div
+                            x-data="{ isUploading: false, progress: 0 }"
+                            x-on:livewire-upload-start="isUploading = true"
+                            x-on:livewire-upload-finish="isUploading = false"
+                            x-on:livewire-upload-error="isUploading = false"
+                            x-on:livewire-upload-progress="progress = $event.detail.progress"
+                    >
+                        <!-- Progress Bar -->
+                        <div x-show="isUploading">
+                            <progress max="100" x-bind:value="progress"></progress>
+                        </div>
+                        <input type="file" wire:model="state.file" class="br-input mt-1"
+                               id="file"
+                               required
+                        >
+                        {{--<p class="text-justify text-muted mt-1">
+                            @lang('Selecione o arquivo gerado pelo SIAFI')
+                        </p>--}}
+
+                        {{--@if($importing && !$importFinished)
+                            <div wire:poll="updateImportProgress">
+                                @lang('Importando...Favor aguarde.')
+                            </div>
+                        @endif
+
+                        @if($importFinished)
+                            @lang('Processo de importação finalizado.')
+                        @endif--}}
+                    </div>
+                    {{--@error('logo')
+                    <div class="help-block with-errors pull-right no-margin">
+                        <span class="error">{{ $message }}</span>
+                    </div>
+                    @enderror--}}
+
+                    {{--<x-form.input wire:model.defer="state.quantidade"   col="col-6 col-sm-6 col-md-4 col-lg-4" label="Quantidade" placeholder="Quantidade"  /> --}}{{--maxlength="6"--}}
+                </x-fieldset>
+
+                <x-divider-form />
+
+                <div class="mx-half ">
+                    {{--<x-links.buttons.voltar :route="route('cadastros.usuario.index')" />--}}
+                    {{--<x-buttons.button x-on:click="closeModalOnClickAway()" />--}}
+                    <x-buttons.button
+                            class="primary mt-3 mt-sm-0 ml-sm-3"
+                            type="submit"
+                            :faBefore="true"
+                            fa="fa-file-import fa-lg"
+                            :label="__('botoes.importar')"
+                            wire:target="importar"
+                    />
+                </div>
+            </form>
+        </x-modals.body>
+    </x-modals.modal>
+</div>

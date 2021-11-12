@@ -1,0 +1,51 @@
+<?php
+
+namespace [namespace];
+
+use App\Imports\{Model}\{Import};
+use Livewire\WithFileUploads;
+use LivewireUI\Modal\ModalComponent;
+use Gsferro\ResponseView\Traits\ResponseView;
+use Maatwebsite\Excel\Facades\Excel;
+
+class [class] extends ModalComponent
+{
+    use ResponseView, WithFileUploads;
+    public array $state = [];
+    public $importing = false;
+    public $importFilePath;
+
+    public function render()
+    {
+        return $this->view('[view]');
+    }
+
+    public function importar()
+    {
+        try {
+            /*$this->validate([
+                "state.file" => 'required',
+            ]);*/
+
+            $this->importing = true;
+            $this->importFilePath = $this->state["file"]->store('imports');
+
+            // TODO aplicar AfterImportJob enviando notification (email e push)
+            /*
+            Excel::queueImport(
+                new [Import],
+                $this->importFilePath
+            );
+            */
+
+            $this->emit('importacao', [
+                "type"    => "success",
+                "message" => __("Planilha importada com sucesso e esta sendo processada em 2º plano."),
+            ]);
+            //            $this->closeModal();
+        } catch (\Exception $e) {
+            $this->addData('error', $e->getMessage());
+            return $this->render();
+        }
+    }
+}

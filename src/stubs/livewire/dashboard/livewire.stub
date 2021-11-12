@@ -2,10 +2,10 @@
 
 namespace [namespace];
 
+use Livewire\Component;
 use App\Traits\Dashboard\CardFilterTrait;
 use App\Interfaces\Dashboard\CardFilterInterface;
 use Gsferro\ResponseView\Traits\ResponseView;
-use Livewire\Component;
 
 class [class] extends Component implements CardFilterInterface
 {
@@ -22,6 +22,12 @@ class [class] extends Component implements CardFilterInterface
 
     public function render()
     {
+        $this->addTitulo(__('Total de [class]'));
+        // $this->addSubTitulo(__(''));
+        $this->addData("src", asset('imagens/undraw/work_time.svg'));
+        // $this->addData("route", route('cadastros.[class].index'));
+        $this->addData("label", __('Listar [class]'));
+
         return $this->view('[view]');
     }
 }

@@ -2,9 +2,8 @@
 
 namespace [namespace];
 
-use Gsferro\ResponseView\Traits\ResponseView;
-use Illuminate\Support\Facades\Validator;
 use LivewireUI\Modal\ModalComponent;
+use Gsferro\ResponseView\Traits\ResponseView;
 
 class [class] extends ModalComponent
 {

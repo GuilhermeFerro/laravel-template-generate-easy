@@ -1,9 +1,0 @@
-<div>
-    @push('titulo', $titulo)
-    @push('subTitulo', $subTitulo ?? null)
-    @push('breadcrumb')
-        <x-breadcrumb :breadcrumb="$breadcrumb" />
-    @endpush
-
-    @livewire('usuarios.table')
-</div>
